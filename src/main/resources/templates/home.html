@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <div th:replace="shared/header :: header-css"/>
+    <title>Strona domowa</title>
+</head>
+<body>
+<div th:replace="shared/header :: header('home')"/>
+
+
+
+<div id="searchForm">
+    <div th:if="${page} == null">
+        <div th:include="shared/searchForm :: search(${'/'})"></div>
+    </div>
+    <div th:unless="${page} == null">
+        <div th:include="shared/searchForm :: search('/?'+${page})"></div>
+    </div>
+
+</div>
+
+
+<div id="main" class="container">
+
+    <div th:if="${articleListPage.hasContent() eq false}">
+        <h1>BRAK ARTYKUŁÓW DO WYŚWIETLENIA</h1>
+    </div>
+
+    <div th:each="article : ${articleListPage.content}">
+
+
+        <a class="articles-home" th:href="@{/articleContent.html(id=${article.id})}">
+
+            <div><h1>[[${article.title}]]</h1></div>
+            <div><img class="image-width" th:src="@{'statics/images/'+${article.mainImage}}"></div>
+
+        </a>
+        <div class="article-info">
+            <span class="username-home">[[${article.user.username}]] · [[${#dates.format(article.creationDate, 'dd-MM-yyyy')}]]</span>
+            <a class="not-active-home-opinion-negative"><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp&nbsp[[${article.negativeOpinion}]]</a>
+            <a class="not-active-home-opinion-positivie"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp&nbsp[[${article.positiveOpinion}]]</a>
+
+        </div>
+        <div th:if="${waitingRoom}" sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="waitingRoomButtons">
+                <a th:href="@{enableArticle(eid=${article.id})}" class="btn btn-success" id="addArticleButton">Dodaj
+                    artykuł</a>
+            </div>
+            <div class="waitingRoomButtons">
+                <a th:href="@{deleteArticle(did=${article.id}, link='waitingRoom')}" class="btn btn-danger"
+                   id="deleteArticleButton">Usuń artykuł</a>
+            </div>
+        </div>
+        <hr/>
+
+    </div>
+
+
+    <div th:if="${page} == null">
+        <div th:replace="shared/pageable :: pager('/', ${articleListPage}, ${concat})"></div>
+    </div>
+    <div th:unless="${page} == null">
+        <div th:replace="shared/pageable :: pager('/articleList.html?'+${page}, ${articleListPage}, ${concat})"></div>
+    </div>
+
+
+</div>
+
+<div th:replace="shared/footer :: footer"></div>
+</body>
+</html>

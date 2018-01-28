@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="pager(mainUrl, page, concat)"
+     th:with="
+         firstPageUrl=${mainUrl}+${concat}+'page=0&size='+${page.size},
+         prevPageUrl=${mainUrl}+${concat}+'page='+${page.number - 1}+'&size='+${page.size},
+         nextPageUrl=${mainUrl}+${concat}+'page='+${page.number + 1}+'&size='+${page.size},
+         lastPageUrl=${mainUrl}+${concat}+'page='+${page.totalPages - 1}+'&size='+${page.size}
+    "
+>
+
+
+    <nav>
+        <ul class="pagination">
+
+
+            <li th:class="${page.first}?'disabled'">
+                <a th:href="${page.first?'#':firstPageUrl}">
+                    <span>Pierwsza</span>
+                </a>
+            </li>
+
+            <li th:class="${page.first}?'disabled'">
+                <a th:href="${page.first?'#':prevPageUrl}">
+                    <span>&laquo;</span>
+                </a>
+            </li>
+
+
+            <li th:each="pageIdx : ${#numbers.sequence( 0, page.totalPages-1)}"
+                th:with="pageUrl=${mainUrl}+${concat}+'page='+${pageIdx}+'&size='+${page.size}"
+            >
+                <a th:href="${pageUrl}">[[${pageIdx+1}]]</a>
+            </li>
+
+            <li th:class="${page.last}?'disabled'">
+                <a th:href="${page.last?'#':nextPageUrl}">
+                    <span>&raquo;</span>
+                </a>
+            </li>
+
+            <li th:class="${page.last}?'disabled'">
+                <a th:href="${page.last?'#':lastPageUrl}">
+                    <span>Ostatnia</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <ul class="pagination" style="float: right" th:with="pageSizes = ${ {5, 10, 20, 30} }">
+            <li th:each="size : ${pageSizes}" th:class="${page.size == size}?'active'"
+                th:with="pageUrl=${mainUrl}+${concat}+'page=0&size='+${size}"
+            >
+
+                <a th:href="${pageUrl}">
+                    <span>[[${size}]]</span>
+                </a>
+
+            </li>
+        </ul>
+    </nav>
+
+
+</div>
+
+</body>
+</html>

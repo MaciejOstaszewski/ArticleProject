@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <div th:replace="shared/header :: header-css"/>
+    <title>Artykuł</title>
+</head>
+<body>
+<div th:replace="shared/header :: header('home')"/>
+
+<div id="main" class="container">
+
+
+    <div>
+        <div>
+            <div><h1 class="title">[[${article.title}]]</h1></div>
+            <div class="article-main"><img class="image-width" th:src="@{'statics/images/'+${article.mainImage}}"></div>
+
+            <div class="article-info">
+                <span class="username-home">[[${article.user.username}]] · [[${#dates.format(article.creationDate, 'dd-MM-yyyy')}]]</span>
+                <a class="not-active-home-opinion-negative"><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp&nbsp[[${article.negativeOpinion}]]</a>
+                <a class="not-active-home-opinion-positivie"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp&nbsp[[${article.positiveOpinion}]]</a>
+
+            </div>
+            <hr/>
+            <div id="articleContent" class="article-content">
+                <div th:remove="tag" th:utext="${article.contents}"></div>
+            </div>
+            <div th:if="${isRated}">
+                <a th:href="@{rate(aid=${article.id}, opinion=true)}" class="positive-opinion"><span
+                        class="glyphicon glyphicon-thumbs-up"></span>&nbsp&nbsp[[${article.positiveOpinion}]]</a>
+                <a th:href="@{rate(aid=${article.id}, opinion=false)}" class="negative-opinion"><span
+                        class="glyphicon glyphicon-thumbs-down"></span>&nbsp&nbsp[[${article.negativeOpinion}]]</a>
+            </div>
+            <div th:unless="${isRated}">
+                <a class="not-active-positive"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp&nbsp[[${article.positiveOpinion}]]</a>
+                <a class="not-active-negative"><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp&nbsp[[${article.negativeOpinion}]]</a>
+            </div>
+            <hr/>
+            <div>
+
+                <form th:method="POST" th:action="@{addComment(aid=${article.id})}" th:object="${comments}">
+
+                    <div class="form-group">
+                        <label for="comment">Dodaj komentarz:</label>
+                        <textarea th:field="*{comment}" class="form-control" rows="5" id="comment"></textarea>
+                    </div>
+                    <div>
+                        <input type="submit" class="btn btn-primary" value="Dodaj komentarz"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="comments-contener">
+            <div class="article-comment" th:each="com : ${articleComment}">
+                <span class="comment-header">[[${com.user.username}]] · [[${#dates.format(com.creationDate, 'dd-MM-yyyy')}]]</span>
+                <hr/>
+                <p class="comment">[[${com.comment}]]</p>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<div th:replace="shared/footer :: footer"></div>
+</body>
+</html>

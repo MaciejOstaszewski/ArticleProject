@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Tytuł strony</title>
+</head>
+<body>
+<div th:fragment="search(page)"
+     th:with="adress=${page}">
+</div>
+
+<div id="main" th:fragment="search">
+
+    <form th:method="POST" th:action="@{${adress}}" th:object="${searchCommand}">
+
+        <button id="searchButton" type="submit" class="btn btn-info">
+            <span class="glyphicon glyphicon-search"></span> Wyszukaj
+        </button>
+
+        <input id="searchInput" th:field="*{phrase}" placeholder="Fraza" class="form-control"
+               th:classappend="${#fields.hasErrors('phrase')}?'is-invalid'"/>
+        <div class="error text-danger" th:if="${#fields.hasErrors('phrase')}">
+            <p th:each="err : ${#fields.errors('phrase')}" th:text="${err}"></p>
+
+        </div>
+
+
+
+
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <div th:replace="shared/header :: header-css"/>
+    <title>Strona domowa</title>
+</head>
+<body>
+<div th:replace="shared/header :: header('home')"/>
+
+<div id="main" class="container">
+
+
+    <div th:each="article : ${articleListPage.content}">
+
+
+        <a th:href="@{/home.html(id=${article.id})}">
+
+            <div><h1>[[${article.title}]]</h1></div>
+            <div><img th:src="@{'statics/images/'+${article.mainImage}}" width="500" height="377"></div>
+
+        </a>
+
+    </div>
+
+
+</div>
+<div th:replace="shared/footer :: footer"></div>
+</body>
+</html>
